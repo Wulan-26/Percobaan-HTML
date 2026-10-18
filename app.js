@@ -24,8 +24,10 @@ let dataMahasiswa = [
 ];
 
 // 2. Elemen Dom Utama.
-
-
+const alertBox = document.getElementById("alert-box");
+const tabelBody = document.getElementById("tabel-body-mahasiswa");
+const totalBadge = document.getElementById("total-mahasiswa-badge");
+const  totalInfo = document.getElementById("total-mahasiswa-info");
 /*
 // Seleksi Elemen Formulir Tambah Mahasiswa
 const formTambah = document.getElementById("form-tambah-mahasiswa");
@@ -38,12 +40,27 @@ const inputEmail = document.getElementById("email");
 
 
 // 3. Fungsi Menampilkan Notifikasi Alert Interaktif (Percobaan 3-1).
+function showAlert(message, type = "success") {
+    if (!alertBox) return;
+    alertBox.textContent = message;
+    alertBox.className = `alert alert-${type} show`
 
+    setTimeout(() => {
+        alertBox.className = 'alert-box'
+    }, 4000);
+    // Percobaan 3-1 langkah 4
 
 
 // 4. Fungsi Pembaruan Counter Statistik Real-Time.
+function updateCounter(displayedCount, totalCount = dataMahasiswa.lenght) {
+    if (totalBadge) {
+        totalBadge.textContent = totalCount;
+    }
 
-
+    if (totalInfo) {
+        totalInfo.textContent = `Menampilkan: ${displayedCount} dari ${totalCount} mahasiswa`;
+    }
+}
 
 // 5. Fungsi Render Tabel ke DOM Secara Dinamis (Percobaan 3-2).
 
@@ -51,26 +68,58 @@ function renderTable(data = dataMahasiswa) {
     if (!tabelBody) return;
 
     // Percobaan 3-2 langkah 6
+    function renderTable(data = dataMahasiswa) {
+        if (!tabelBody) return;
+        tabelBody.innerHTML = "";
 
     if (data.length === 0) {
-       
-        // Percobaan 3-2 langkah 7
-       
+        tabelBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-row"> 
+                Tidak ada data mahasiswa yang cocok atau tersimpan dalam sistem.
+                </td>
+            </tr>
+        `;
+        updateCounter(0);
+        return;
     }
+
+        // Percobaan 3-2 langkah 8
+    data.forEach((mhs, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>
+                <img src="img/avatar-default.svg" alt="Foto ${mhs.nama}" class="avatar-img" width="36" height="36">
+            </td>
+            <td><strong>${mhs.npm}</strong></td>
+            <td>${mhs.nama}</td>
+            <td><span class="badge">${mhs.program_studi}</span></td>
+            <td>${mhs.angkatan}</td>
+            <td><a href="mailto:${mhs.email}" class="link-email">${mhs.email}</a></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="hapusMahasiswa('${mhs.npm}')">Hapus</button>
+            </td>
+        `;
+
+
+
+    }
+
+
 
     
     data.forEach((mhs, index) => {
         const tr = document.createElement("tr");
-        
-        // Percobaan 3-2 langkah 8
 
 
         // Percobaan 3-2 langkah 9
+        tabelBody.appendChild(tr);
         
     });
 
     // Percobaan 3-2 langkah 10
-
+    updateCounter(data.length);
 }
 
 // 6. Validasi Form Sisi Klien Menggunakan Regular Expression (Percobaan 3-3).
@@ -126,5 +175,8 @@ if (inputSearch) {
 // Inisialisasi saat DOM selesai dimuat
 
 document.addEventListener(
+    "DOMContentLoaded", function () {
+        showAlert("Selamat Datang di Aplikasi SIMA", "info");
     
-)
+}
+);
